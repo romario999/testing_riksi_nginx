@@ -1,0 +1,39 @@
+# ❌ Робочі директорії, які створює Next.js або збірка
+node_modules
+.next
+dist
+build
+out
+
+# ❌ Docker-файли
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# ❌ Git і редакторські файли
+.git
+.gitignore
+.vscode
+*.swp
+
+# ❌ Конфіденційні або специфічні для середовища
+.env
+.env.local
+.env.*.local
+
+# ❌ Кеші та логи
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# ❌ Документація
+*.md
+
+# ❌ Тестові файли та конфігурації
+__tests__/
+coverage/
+*.test.js
+*.spec.js
+jest.config.js

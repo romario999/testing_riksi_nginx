@@ -1,0 +1,64 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    container_name: riksi_app
+    depends_on:
+      riksi_db:
+        condition: service_healthy
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://riksi:riksi@riksi_db:5432/riksi_db?schema=public
+    env_file:
+      - .env
+    networks:
+      - riksi_network
+    volumes:
+      - ${HOME}/uploads:/app/uploads
+
+
+  riksi_db:
+    image: postgres:17-alpine
+    container_name: riksi_db
+    restart: always
+    networks:
+      - riksi_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U riksi -d riksi_db"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    environment:
+      POSTGRES_USER: riksi
+      POSTGRES_PASSWORD: riksi
+      POSTGRES_DB: riksi_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - riksi_db_data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: riksi_nginx
+    restart: always
+    ports:
+      - "80:80"
+      # - "443:443"  # якщо SSL
+    depends_on:
+      - app
+    networks:
+      - riksi_network
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./public:/app/public:ro   # якщо потрібно, наприклад для статики
+      - ${HOME}/uploads:/app/uploads:ro 
+
+volumes:
+  riksi_db_data:
+
+networks:
+  riksi_network:
