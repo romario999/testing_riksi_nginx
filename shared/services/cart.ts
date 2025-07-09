@@ -7,13 +7,13 @@ export const getCart = async (): Promise<CartDTO> => {
 };
 
 export const updateItemQuantity = async (itemId: number, quantity: number): Promise<CartDTO> => {
-    return (await axiosInstance.patch<CartDTO>('/cart/' + itemId, { quantity })).data;
+    return (await axiosInstance.patch<CartDTO>(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cart/` + itemId, { quantity })).data;
 };
 
 export const removeCartItem = async (id: number): Promise<CartDTO> => {
-    return (await axiosInstance.delete<CartDTO>('/cart/' + id)).data;
+    return (await axiosInstance.delete<CartDTO>(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cart/` + id)).data;
 }
 
 export const addCartItem = async (values: CreateCartItemValues): Promise<CartDTO> => {
-    return (await axiosInstance.post<CartDTO>('/cart', values)).data;
+    return (await axiosInstance.post<CartDTO>(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cart`, values)).data;
 }
