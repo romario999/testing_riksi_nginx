@@ -1,9 +1,9 @@
 export enum ApiRoutes {
-    SEARCH_PRODUCTS = 'products/search',
-    CATEGORIES = 'categories',
-    SUBCATEGORIES = 'subcategories',
-    CAROUSEL = 'getSliderItems',
-    BANNER = 'getBannerItems',
-    FOOTERPAGE = 'getFooterPages',
-    ORDERS = 'orders'
+    SEARCH_PRODUCTS = 'api/products/search',
+    CATEGORIES = 'api/categories',
+    SUBCATEGORIES = 'api/subcategories',
+    CAROUSEL = 'api/getSliderItems',
+    BANNER = 'api/getBannerItems',
+    FOOTERPAGE = 'api/getFooterPages',
+    ORDERS = 'api/orders'
 }
