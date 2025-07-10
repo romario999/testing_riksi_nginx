@@ -83,6 +83,21 @@ export const CheckoutAdressForm: React.FC<Props> = ({ className }) => {
 
         {errorText && <ErrorText text={errorText} className="mt-2" />}
 
+        {deliveryType !== 'nova-post' && deliveryType !== 'ukr-post' && (
+          <>
+            <br />
+            <span className="text-gray-600 text-sm">
+              <span className="font-bold">Вартість доставки:</span>
+              <br />
+              Доставка Нова Пошта від 80 грн
+              <br />
+              Доставка Укрпошта від 60 грн
+              <br />
+              Доставка Кур'єром Нової Пошти від 100 грн
+            </span>
+          </>
+        )}
+
         {deliveryType === 'nova-post' && <NovaPoshtaInputs />}
         {deliveryType === 'ukr-post' && <UkrPostInputs />}
       </div>

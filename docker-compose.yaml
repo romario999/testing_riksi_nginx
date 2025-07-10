@@ -17,7 +17,7 @@ services:
     networks:
       - riksi_network
     volumes:
-      - ${HOME}/uploads:/app/uploads
+      - ${HOME}/uploads:/app/public/uploads
 
 
   riksi_db:

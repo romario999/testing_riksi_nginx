@@ -40,6 +40,18 @@ export const CheckoutPaymentForm: React.FC<CheckoutPaymentFormProps> = ({ classN
             </SelectContent>
         </Select>
         <span className='ml-2 text-gray-400 text-sm'>Оплата через WayForPay</span>
+
+        {paymentType === 'postPayment' && (
+            <>
+                <br />
+                <br />
+                <span className='text-gray-600 text-sm'><span className='font-bold'>Комісія Нової пошти за накладений платіж складає: </span><br />
+
+                    2% від суми платежу + 20 грн — якщо отримувач сплачує готівкою або через NovaPay/мобільний додаток <br />
+
+                    Якщо оплата відбувається банківською карткою у терміналі або в додатку — тариф зростає до 3,8 %</span>
+            </>
+        )}
         {errorText && <ErrorText text={errorText} />}
     </WhiteBlock>
   );
