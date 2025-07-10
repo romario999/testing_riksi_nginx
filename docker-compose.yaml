@@ -47,7 +47,7 @@ services:
     restart: always
     ports:
       - "80:80"
-      # - "443:443"  # якщо SSL
+      - "443:443"
     depends_on:
       - app
     networks:
@@ -55,8 +55,18 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./public:/app/public:ro   # якщо потрібно, наприклад для статики
-      - ${HOME}/uploads:/app/uploads:ro 
+      - ${HOME}/uploads:/app/uploads:ro
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
 
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: /bin/sh -c "sleep 5 && certbot certonly --webroot --webroot-path=/var/www/certbot --email riksi.factory@gmail.com --agree-tos --no-eff-email -d riksi.com.ua -d www.riksi.com.ua"
+   
 volumes:
   riksi_db_data:
 
