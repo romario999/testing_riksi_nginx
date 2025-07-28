@@ -37,7 +37,7 @@ export const Footer =  () => {
                 <div className="flex-col gap-4 hidden xl:block">
                     <h5 className="font-bold">Каталог</h5>
                     <ul className="flex flex-col gap-1">
-                        {categories.sort((a, b) => a.id - b.id).map((item, i) => (
+                        {categories.filter(category => category.isActive).sort((a, b) => a.id - b.id).map((item, i) => (
                             <li key={i}>
                                 <Link href={`/catalog/${item.categoryUrl}`} className="text-sm">
                                     {item.name}
@@ -103,7 +103,7 @@ export const Footer =  () => {
                     </ul>
                     <span className="flex mt-2 text-sm items-center">
                         <MapPin size={16} className="mr-2" />
-                        Чернігівська область, місто Прилуки
+                        Чернігівська область, місто Прилуки, <br /> 2 провулок Коцюбинського, 6
                     </span>
                 </div>
 

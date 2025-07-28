@@ -48,7 +48,7 @@ export const ProfileEditForm: React.FC<Props> = ({ data }) => {
 
     const onClickSignOut = () => {
         signOut({
-            callbackUrl: '/',
+            callbackUrl: 'https://riksi.com.ua',
         });
     };
 

@@ -24,6 +24,7 @@ interface Subcategory {
   name: string;
   id: number;
   link: string;
+  isActive: boolean;
 }
 
 export const DropdownMenu = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
@@ -96,7 +97,7 @@ export const DropdownMenu = ({ isOpen, onClose }: { isOpen: boolean, onClose: ()
           </div>
           )}
           <ul className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 md:mt-9 mt-0 w-[90%] mx-auto ${session ? '' : 'mt-9'}`}>
-            {categories.sort((a, b) => a.id - b.id).map((category: Category) => (
+            {categories.filter(category => category.isActive).sort((a, b) => a.id - b.id).map((category: Category) => (
               category.subcategories && category.subcategories.length > 0 ? (
                 <AccordionItem
                   key={category.id}
@@ -136,7 +137,7 @@ export const DropdownMenu = ({ isOpen, onClose }: { isOpen: boolean, onClose: ()
                         category.subcategories.length > 3 ? "grid grid-cols-2" : "flex flex-col"
                       }`}
                     >
-                      {category.subcategories.sort((a, b) => a.id - b.id).map(subcategory => (
+                      {category.subcategories.filter(subcategory => subcategory.isActive).sort((a, b) => a.id - b.id).map(subcategory => (
                         <Link 
                           key={subcategory.id} 
                           href={`/catalog/${category.categoryUrl}/${subcategory.subcategoryUrl}`} 

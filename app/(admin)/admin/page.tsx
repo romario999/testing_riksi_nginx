@@ -7,11 +7,11 @@ import { getLastWeekOrders } from "@/shared/lib/get-last-week-orders";
 export default async function AdminPage() {
     const orders = await getLastWeekOrders();
     const popularProducts = await prisma.order.findMany({
-        // where: {
-        //     createdAt: {
-        //         gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-        //     }
-        // },
+        where: {
+            createdAt: {
+                gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+            }
+        },
         select: {
             items: true
         }

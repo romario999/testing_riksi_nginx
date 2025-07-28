@@ -31,8 +31,10 @@ type Items = {
 }
 
 export const Filters: React.FC<Props> = ({ className, isCatalog, isCategory, isSubcategory, categoryId, subcategoryId, hasSubcategory, categoryName, onFilterChange }) => {
-  const { categories, subcategories, loading } = useCategories();
- 
+  const { categories: filteredCategories, subcategories: filteredSubcategories, loading } = useCategories();
+  const categories = filteredCategories.filter(category => category.isActive); // Фільтруємо активні категорії
+  const subcategories = filteredSubcategories.filter(subcategory => subcategory.isActive); // Філь
+
   const filters = useFilters();
   useQueryFilters(filters);
 

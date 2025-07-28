@@ -27,7 +27,10 @@ export const generateSignature = (inputs: inputsSignature) => {
     } = inputs;
 
     const string = `${merchantAccount};${merchantDomainName};${orderReference};${orderDate};${amount};${currency};${productNames.join(';')};${productCounts.join(';')};${productPrices.join(';')}`;
-    const key = process.env.NEXT_PUBLIC_WAYFORPAY_SECRET_KEY; // Replace with your actual secret key
-    const generatedSignature = CryptoJS.HmacMD5(string, key!).toString(CryptoJS.enc.Hex);
+    const key = process.env.NEXT_PUBLIC_WAYFORPAY_SECRET_KEY ?? ''; // Replace with your actual secret key
+
+    console.log('String to sign:', string);
+    console.log('Secret key:', key);
+    const generatedSignature = CryptoJS.HmacMD5(string, key).toString(CryptoJS.enc.Hex);
     return generatedSignature;
 };

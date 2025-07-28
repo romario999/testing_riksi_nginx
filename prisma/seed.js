@@ -200,13 +200,58 @@ const bottomBannerImage = [
 
 const users = [
   {
-    fullName: 'Roma Bondarenko',
-    email: 'rbondarenko211@gmail.com',
-    password: hashSync('roma2310', 10),
+    fullName: 'Riksi Admin',
+    email: 'riksi.factory@gmail.com',
+    password: hashSync('riksiadmin12345', 10),
     verified: new Date(),
     role: UserRole.ADMIN
   }
 ];
+
+const footerPages = [
+  {
+    title: 'Про нас',
+    secondTitle: 'Підкресліть свою красу з українським брендом RIKSI',
+    footerUrl: 'pro-nas',
+    content: '<strong>RIKSI</strong> - український бренд спідньої жіночої білизни, боді, купальників та домашнього одягу, який заснований у 2020 році.  Маючи власне виробництво, ми створюємо унікальні колекції, які крокують у ногу з модними тенденціями та трендами. Для кожної моделі ми підбираємо тільки найкращі матеріали та найактуальніші кольори, щоб кожна дівчина або жінка виглядала яскраво і ловила на собі тисячі захоплених поглядів, а вдома тішилася своїми неповторними та грайливими образами, не забуваючи про комфорт у кожному русі.',
+    isActive: true
+  },
+  {
+    title: 'Гарантія',
+    secondTitle: 'Гарантія на продукцію RIKSI',
+    footerUrl: 'garantiya',
+    content: 'Гарантія діє на всі види товарів 30 днів з моменту придбання. Відповідаємо за якість власних виробів і зобовʼязуємося робити обмін або повернення у разі виявлення виробничого браку.',
+    isActive: true
+  },
+  {
+    title: 'Обмін та повернення',
+    secondTitle: 'Обмін та повернення продукції RIKSI',
+    footerUrl: 'obmin-ta-povernennya',
+    content: 'Товар можна обміняти чи повернути упродовж 14 днів з моменту отримання замовлення, якщо збережено товарний вигляд. <br> <br> Відповідно до Закону України "Про захист прав споживачів" спідня білизна відноситься до категорії товарів, що не підлягають обміну та поверненню, окрім випадків виробничого браку. Але, ми <strong> йдемо на назустріч нашим клієнтам </strong> і допускаємо повернення та обмін замовлення спідньої білизни. Обміняти її можна протягом 3 днів з моменту отримання. <br> <br> Ми ретельно перевіряємо одяг та білизну при обміні чи поверненні. У разі, якщо будуть помічені ознаки носіння, забруднення, пошкодження, відривання ярликів, то ми у праві відмовити Вам у Вашому проханні. <br> <br> Строки повернення коштів складають 1-3 робочих дні.',
+    isActive: true
+  },
+  {
+    title: 'Оплата і доставка',
+    secondTitle: 'Оплата і доставка продукції RIKSI',
+    footerUrl: 'oplata-i-dostavka',
+    content: '<strong>Післяплата:</strong> <br> <br> Товар передається до поштового відділення після частокової оплати у розмірі 200 грн у якості доказу Вашої зацікавленості у покупці. Решту частину коштів сплачуєте у відділенні пошти. <br> <br> <strong>Передплата:</strong> <br> <br> <strong> Оплата замовлень по Україні: </strong> <br> <br> - Через WayForPay; <br> <br> - На карту ФОП;<br> <br> - За реквізитами IBAN; <br> <br> - Накладений платіж. <br> <br> <strong>Оплата для міжнародних замовлень:</strong> <br> <br> - Через WayForPay. <br> <br> <strong>Оплата частинами: </strong> <br> <br> - «Посилка в кредит» від Нової пошти. <br> <br> Укрпоштою по Україні та закордон за тарифами перевізників. <br> <br> При замовленні від 4000 грн доставка по Україні безкоштовно. <br> <br> <strong> Увага!</strong> Колір товару на фото може відрізнятися від реального, оскільки це повʼязано з особливостями кольорових відтінків дисплея Вашого телефону, налаштуваннями фотокамери або ж іншими факторами. <br> <br> Під час пакування товару ми ретельно перевіряємо річ на предмет браку та на якість самої упаковки. Усі товари передаються до перевізника упаковані належним чином. Ми не несемо відповідальності за збереження пакування при транспортуванні. У разі пошкодження пакування, будь ласка, звертайтеся до перевізника, оскільки компанія перевізник несе відповідальність за належне транспортування посилок.',
+    isActive: true
+  },
+  {
+    title: 'Угода користувача',
+    secondTitle: '',
+    footerUrl: 'privacypolicy',
+    content: "",
+    isActive: true
+  },
+  {
+    title: 'Публічний договір',
+    secondTitle: '',
+    footerUrl: 'publichnyi-dohovir',
+    content: '',
+    isActive: true
+  },
+]
 
 async function seed() {
   for (const user of users) {
@@ -239,6 +284,19 @@ async function seed() {
       },
     });
 
+  }
+
+  for(const footerPage of footerPages) {
+    const createdFooterPage = await prisma.footerPage.create({
+      data: {
+        title: footerPage.title,
+        secondTitle: footerPage.secondTitle,
+        footerUrl: footerPage.footerUrl,
+        content: footerPage.content,
+        isActive: footerPage.isActive
+      }
+    })
+    console.log(`Created footer page: ${createdFooterPage.title}`)
   }
 
   for (const sliderImage of sliderImages) {
@@ -292,9 +350,15 @@ async function down() {
   await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Subcategory" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Product" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "ProductItem" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Cart" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "CartItem" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "SliderImage" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "BannerImage" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "BottomBannerImage" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "FooterPage" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "ProductComplect" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "PromoCode" RESTART IDENTITY CASCADE`;
 }
 

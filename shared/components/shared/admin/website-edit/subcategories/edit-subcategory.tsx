@@ -9,6 +9,7 @@ import { AdminCategoryName } from "../categories/admin-category-name";
 import { Category } from "@prisma/client";
 import { AdminSubcategoryCategories } from "./admin-subcategory-categories";
 import { AdminUpdateSubcategory } from "@/app/actions";
+import { AdminSubcategoryIsActive } from "./admin-subcategories-isactive";
 
 export const EditSubcategory = ({ subcategory, allCategories }: { subcategory: any, allCategories: Category[] }) => {
 
@@ -16,6 +17,7 @@ export const EditSubcategory = ({ subcategory, allCategories }: { subcategory: a
     const [description, setDescription] = useState(subcategory.description);
     const [subcategoryUrl, setSubcategoryUrl] = useState(subcategory.subcategoryUrl);
     const [categoryId, setCategoryId] = useState(subcategory.categoryId);
+    const [isActive, setIsActive] = useState(subcategory.isActive);
 
     const handleSaveSubcategoryChanges = async () => {
         try {
@@ -30,6 +32,7 @@ export const EditSubcategory = ({ subcategory, allCategories }: { subcategory: a
                 description,
                 subcategoryUrl,
                 categoryId,
+                isActive
             };
 
             await AdminUpdateSubcategory(updatedSubcategory, subcategory.id);
@@ -54,6 +57,8 @@ export const EditSubcategory = ({ subcategory, allCategories }: { subcategory: a
             <AdminCategoryCategoryurl categoryUrl={subcategoryUrl} setCategoryUrl={setSubcategoryUrl} label="Посилання на підкатегорію" />
 
             <AdminSubcategoryCategories categoryId={categoryId} setCategoryId={setCategoryId} allCategories={allCategories} />
+
+            <AdminSubcategoryIsActive isActive={isActive} setIsActive={setIsActive} />
         </div>
     )
 }

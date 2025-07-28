@@ -9,6 +9,7 @@ import { Button } from "@/shared/components/ui";
 import toast from "react-hot-toast";
 import { AdminUpdateCategory } from "@/app/actions";
 import { AdminCategoryDiscount } from "./admin-category-discount";
+import { AdminCategoryIsActive } from "./admin-category-isactive";
 
 export const EditCategory = ({ category }: { category: any }) => {
 
@@ -17,6 +18,7 @@ export const EditCategory = ({ category }: { category: any }) => {
     const [categoryUrl, setCategoryUrl] = useState(category.categoryUrl);
     const [subcategories, setSubcategories] = useState(category.subcategories);
     const [categoryDiscount, setCategoryDiscount] = useState(category.discountPercent);
+    const [isActive, setIsActive] = useState(category.isActive);
 
     const handleSaveCategoryChanges = async () => {
         try {
@@ -30,7 +32,8 @@ export const EditCategory = ({ category }: { category: any }) => {
                 name,
                 description,
                 categoryUrl,
-                discountPercent: String(categoryDiscount) || null
+                discountPercent: String(categoryDiscount),
+                isActive
             };
     
             await AdminUpdateCategory(updatedCategory, category.id);
@@ -57,6 +60,8 @@ export const EditCategory = ({ category }: { category: any }) => {
             <AdminCategoryViewSubcategories subcategories={subcategories} />
 
             <AdminCategoryDiscount categoryDiscount={categoryDiscount} setCategoryDiscount={setCategoryDiscount} />
+
+            <AdminCategoryIsActive isActive={isActive} setIsActive={setIsActive} />
         </div>
     )
 }

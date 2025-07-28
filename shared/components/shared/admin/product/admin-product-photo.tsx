@@ -24,31 +24,40 @@ export const AdminProductPhoto: React.FC<Props> = ({images, setImages, productLi
         setImages(updatedImages);
     };
 
-    const handleRemoveImage = async (index: number, imageUrl: string) => {
-        try {
+const handleRemoveImage = async (index: number, imageUrl: string) => {
+    let relativePath = "";
+
+    try {
+        const isExternal = imageUrl.startsWith("http") && !imageUrl.includes(window.location.hostname);
+
+        if (!isExternal) {
+            // Витягуємо відносний шлях: /uploads/xyz.jpg
+            const url = new URL(imageUrl, window.location.origin);
+            relativePath = url.pathname;
+
             const res = await fetch("/api/delete-image", {
                 method: "POST",
-                body: new URLSearchParams({ imageUrl }),
+                body: new URLSearchParams({ imageUrl: relativePath }),
             });
-    
-            if (!res.ok) {
-                throw new Error("Не вдалося видалити фото");
-            }
-    
-            const data = await res.json();
-            if (data.message === "Файл успішно видалено") {
-                // Оновлюємо список зображень
-                const updatedImages = images.filter((_, i) => i !== index);
-                setImages(updatedImages);
-                toast.success("Фото успішно видалено");
+
+            // Якщо файл видалився або його немає — все одно видаляємо з масиву
+            if (res.ok || res.status === 404) {
+                toast.success("Фото успішно видалено!");
             } else {
-                toast.error("Помилка при видаленні фото");
+                console.warn("Сервер не зміг видалити фото:", await res.text());
             }
-        } catch (error) {
-            console.error("Помилка при видаленні фото:", error);
-            toast.error("Сталася помилка при видаленні фото");
+        } else {
+            toast.success("Фото успішно видалено!");
         }
-    };
+    } catch (error) {
+        console.error("Помилка при видаленні фото:", error);
+    } finally {
+        // У будь-якому випадку прибираємо фото з масиву
+        setImages(prev => prev.filter((_, i) => i !== index));
+    }
+};
+
+
 
     const handleAddImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;

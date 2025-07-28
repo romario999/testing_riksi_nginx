@@ -19,6 +19,12 @@ services:
     volumes:
       - ${HOME}/uploads:/app/public/uploads
 
+  scheduler:
+    build:
+      context: ./scheduler
+      dockerfile: Dockerfile.scheduler
+    container_name: scheduler
+    restart: unless-stopped
 
   riksi_db:
     image: postgres:17-alpine
