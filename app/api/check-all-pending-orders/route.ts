@@ -1,4 +1,6 @@
 // app/api/check-all-pending-orders/route.ts
+export const dynamic = 'force-dynamic';
+
 
 import { prisma } from '@/prisma/prisma-client';
 import { checkPaymentStatus } from '@/shared/lib/check-payment-status';
@@ -31,6 +33,14 @@ export async function GET() {
                         data: { status: OrderStatus.CANCELLED },
                     });
                     return { id: order.id, updated: true, newStatus: 'CANCELLED' };
+                }
+
+                if (status === 'refunded') {
+                    await prisma.order.update({
+                        where: { id: order.id },
+                        data: { status: OrderStatus.REFUNDED },
+                    });
+                    return { id: order.id, updated: true, newStatus: 'REFUNDED' };
                 }
 
                 return { id: order.id, updated: false, newStatus: 'PENDING' };

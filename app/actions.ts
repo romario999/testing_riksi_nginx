@@ -22,37 +22,62 @@ export async function createOrder(data: CheckoutFormValues, paymentUrl: string, 
         const cookieStore = cookies();
         const cartToken = cookieStore.get('cartToken')?.value;
         const user = await getUserSession();
+        let userCart;
 
         if (!cartToken && !user) {
             throw new Error('Cart token not found');
         }
 
-        const userCart = await prisma.cart.findFirst({
-            include: {
-                user: true,
-                items: {
-                    include: {
-                        productItem: {
-                            include: {
-                                product: true,
+        if (user) {
+            userCart = await prisma.cart.findFirst({
+                include: {
+                    user: true,
+                    items: {
+                        include: {
+                            productItem: {
+                                include: {
+                                    product: true,
+                                },
                             },
                         },
                     },
                 },
-            },
-            where: {
-                OR: [
-                    { token: cartToken },
-                    { userId: Number(user?.id) }
-                ]
-            },
-        });
+                where: {
+                        userId: Number(user?.id)
+                },
+            });
+        }
+
+        if (!userCart && cartToken) {
+             userCart = await prisma.cart.findFirst({
+                include: {
+                    user: true,
+                    items: {
+                        include: {
+                            productItem: {
+                                include: {
+                                    product: true,
+                                },
+                            },
+                        },
+                    },
+                },
+                where: {
+                    token: cartToken,
+                },
+            });
+        }
+        
+        console.log('user: ', user);
+        console.log('userCart: ', userCart);
 
         if(!userCart) {
             throw new Error('Cart not found');
         }
 
         if (userCart?.totalAmount === 0) {
+            console.log(cartToken);
+            console.log(userCart);
             throw new Error('Cart is empty');
         }
 

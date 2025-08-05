@@ -18,7 +18,7 @@ export const AdminProductHeader: React.FC<Props> = ({productName, productUrl, on
             <div className="flex gap-3">
                 <Button onClick={onSave}>Зберегти</Button>
                 <Button onClick={onDeleteProduct}>Видалити</Button>
-                <Link target="_blank" href={`${process.env.NEXT_PUBLIC_SITE_URL}/product/${productUrl}`}>
+                <Link target="_blank" href={`/product/${productUrl}`}>
                     <Button variant={"outline"}>Товар на сайті</Button>
                 </Link>
             </div>

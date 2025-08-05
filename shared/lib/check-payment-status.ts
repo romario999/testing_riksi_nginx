@@ -24,29 +24,24 @@ export const checkPaymentStatus = async (orderReference: string) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
+	    cache: "no-store",
         });
 
         const result = await response.json();
 
         console.log('WayForPay response:', result);
 
-        switch(result.reasonCode) {
-            case 1100: // успішно оброблено
-                switch(result.transactionStatus) {
-                    case "Approved":
-                        return "paid";
-                    case "Declined":
-                    case "Expired":
-                        return "failed";
-                    default:
-                        return "pending";
-                }
-            case 1124: // Cardholder session expired
-            case 1123: // Payment cancelled by client
+        switch(result.transactionStatus) {
+            case "Approved":
+            case "Successful":
+                return "paid";
+            case "Declined":
+            case "Expired":
                 return "failed";
-            // Можеш додати інші case якщо є сенс
+            case "Refunded":
+                return "refunded";
             default:
-                return "error";
+                return "pending";
         }
 
     } catch (error) {

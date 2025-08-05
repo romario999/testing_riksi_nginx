@@ -184,7 +184,21 @@ export const AdminOrdersList: React.FC<Props> = ({
                   {new Date(order.createdAt).toLocaleTimeString("uk-UA")}
                 </td>
                 <AdminOrdersDelivery order={order} />
-                <td className="py-3 px-6 text-sm text-gray-900">{order.paymentType}</td>
+                <td className="py-3 px-6 text-sm text-gray-900">{order.paymentType}
+                  <br />
+                  {order.status === "PENDING" && (
+                    <span className="text-yellow-500">Очікується</span>
+                  )}
+                  {order.status === "SUCCEEDED" && (
+                    <span className="text-green-500">Оплачено</span>
+                  )}
+                  {order.status === "CANCELLED" && (
+                    <span className="text-red-500">Скасовано</span>
+                  )}
+                  {order.status === "REFUNDED" && (
+                    <span className="text-blue-500">Повернено</span>
+                  )}
+                </td>
               </tr>
             ))
           ) : (

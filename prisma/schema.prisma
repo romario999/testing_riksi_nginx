@@ -270,6 +270,7 @@ enum OrderStatus {
   PENDING
   SUCCEEDED
   CANCELLED
+  REFUNDED
 }
 
 enum UserRole {

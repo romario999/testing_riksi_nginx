@@ -11,6 +11,7 @@ import { deleteProduct } from '@/app/actions';
 import Link from 'next/link';
 import { Button } from '@/shared/components/ui';
 import { AdminImportModal } from './admin-import-modal';
+import { AdminExportModal } from './admin-export-modal';
 
 interface AdminProductsListProps {
   initialProducts: Product[];
@@ -32,6 +33,7 @@ export const AdminProductsList: React.FC<AdminProductsListProps> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalExportOpen, setModalExportOpen] = React.useState(false);
   const [importMessage, setImportMessage] = React.useState("");
 
   // При успішному імпорті можна оновити список або вивести повідомлення
@@ -152,10 +154,7 @@ export const AdminProductsList: React.FC<AdminProductsListProps> = ({
         )}
 
         {/* Експорт */}
-        <Link href={"/api/export-products"} target="_blank">
-          <Button variant={'outline'}>Експорт</Button>
-        </Link>
-
+        <Button variant={'outline'} onClick={() => setModalExportOpen(true)}>Експорт</Button>
         {/* Додати товар */}
         <Link href={'products/add-product'}>
           <Button>Додати товар</Button>
@@ -234,6 +233,8 @@ export const AdminProductsList: React.FC<AdminProductsListProps> = ({
         </div>
       )}
       <AdminImportModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onImportSuccess={onImportSuccess} />
+      <AdminExportModal isOpen={modalExportOpen} onClose={() => setModalExportOpen(false)} />
     </div>
   );
 };
+

@@ -6,66 +6,84 @@ import * as XLSX from "xlsx";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
 
-    const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
-    if (!session || session.user.role !== "ADMIN") {
-        return new NextResponse("Unauthorized", { status: 401 });
-    }
+  const url = new URL(request.url);
+  const categoryIds = url.searchParams.getAll("categoryIds");
 
-    const products = await prisma.product.findMany({
+  // Перевірка чи all в categoryIds
+  const fetchAll = categoryIds.includes("all");
+
+  const products = await prisma.product.findMany({
+    where: fetchAll
+      ? {} // без фільтрації — всі товари
+      : categoryIds.length > 0
+        ? {
+            categories: {
+              some: {
+                categoryId: {
+                  in: categoryIds.map((id) => Number(id)),
+                },
+              },
+            },
+          }
+        : {},
+    include: {
+      items: true,
+      categories: {
         include: {
-        items: true,
-        categories: {
-            include: {
-                category: true
-            }
+          category: true,
         },
-        subcategories: {
-            include: {
-                subcategory: true
-            }
+      },
+      subcategories: {
+        include: {
+          subcategory: true,
         },
-        complects: {
-            include: {
-                products: true
-            }
-        }
+      },
+      complects: {
+        include: {
+          products: true,
         },
-    });
+      },
+    },
+  });
 
-    const rows = products.flatMap((product) =>
-        product.items.map((item) => ({
-            sku: item.sku,
-            name: product.name,
-            description: product.description ?? "",
-            productUrl: product.productUrl,
-            photo: product.imageUrl.join(", "),
-            category: product.categories.map((cat) => cat.category.name).join(", "),
-            subcategory: product.subcategories.map((sub) => sub.subcategory.name).join(", "),
-            complects: product.complects.map((com) => com.products.map((p) => p.name).join(", ")).join(", "),
-            price: item.price,
-            oldPrice: item.oldPrice ?? "",
-            size: item.size,
-            color: product.color ?? "",
-            sticker: product.sticker.map((st) => st).join(", "),
-            popularity: product.popularity ?? 0,
-            stock: item.stock ? "В наявності" : "Немає",
-            currency: item.currency,
-        }))
-    );
+  const rows = products.flatMap((product) =>
+    product.items.map((item) => ({
+      sku: item.sku,
+      name: product.name,
+      description: product.description ?? "",
+      productUrl: product.productUrl,
+      photo: product.imageUrl.join(", "),
+      category: product.categories.map((cat) => cat.category.name).join(", "),
+      subcategory: product.subcategories.map((sub) => sub.subcategory.name).join(", "),
+      complects: product.complects.map((com) => com.products.map((p) => p.name).join(", ")).join(", "),
+      price: item.price,
+      oldPrice: item.oldPrice ?? "",
+      size: item.size,
+      color: product.color ?? "",
+      sticker: product.sticker.join(", "),
+      popularity: product.popularity ?? 0,
+      stock: item.stock ? "В наявності" : "Немає",
+      currency: item.currency,
+    }))
+  );
 
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Товари");
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Товари");
 
-    const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+  const buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
 
-    return new NextResponse(buffer, {
-        headers: {
-        "Content-Disposition": `attachment; filename=products-${Date.now()}.xlsx`,
-        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        },
-    });
+  return new NextResponse(buffer, {
+    headers: {
+      "Content-Disposition": `attachment; filename=products-${Date.now()}.xlsx`,
+      "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    },
+  });
 }

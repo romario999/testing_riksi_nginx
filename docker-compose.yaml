@@ -5,6 +5,9 @@ services:
     build:
       context: .
       target: production
+      args:
+        NEXT_PUBLIC_WAYFORPAY_MERCHANT_ACCOUNT: ${NEXT_PUBLIC_WAYFORPAY_MERCHANT_ACCOUNT}
+        NEXT_PUBLIC_WAYFORPAY_SECRET_KEY: ${NEXT_PUBLIC_WAYFORPAY_SECRET_KEY}
     container_name: riksi_app
     depends_on:
       riksi_db:
@@ -12,6 +15,8 @@ services:
     restart: always
     environment:
       - DATABASE_URL=postgresql://riksi:riksi@riksi_db:5432/riksi_db?schema=public
+      - NEXT_PUBLIC_WAYFORPAY_MERCHANT_ACCOUNT=${NEXT_PUBLIC_WAYFORPAY_MERCHANT_ACCOUNT}
+      - NEXT_PUBLIC_WAYFORPAY_SECRET_KEY=${NEXT_PUBLIC_WAYFORPAY_SECRET_KEY}
     env_file:
       - .env
     networks:
@@ -25,6 +30,8 @@ services:
       dockerfile: Dockerfile.scheduler
     container_name: scheduler
     restart: unless-stopped
+    networks:
+      - riksi_network
 
   riksi_db:
     image: postgres:17-alpine
