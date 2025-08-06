@@ -1,5 +1,5 @@
 'use client';
-import { House, ShoppingCart, User, Shirt, PanelsTopLeft, Settings, Phone, Percent } from 'lucide-react';
+import { House, ShoppingCart, User, Shirt, PanelsTopLeft, Phone, Percent, CircleDollarSign} from 'lucide-react';
 import Link from 'next/link';
 
 const Sidebar = () => {
@@ -27,6 +27,9 @@ const Sidebar = () => {
           </Link>
           <Link href={'/admin/discounts'} className="flex items-center space-x-2 text-lg">
             <Percent />
+          </Link>
+          <Link href={'/admin/payment-details'} className="flex items-center space-x-2 text-lg">
+            <CircleDollarSign />
           </Link>
         </nav>
       </div>

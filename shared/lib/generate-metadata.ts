@@ -11,9 +11,10 @@ interface MetadataParams {
   catalog?: boolean;
   wishlist?: boolean;
   resetPassword?: boolean;
+  payment?: boolean;
 }
 
-export const generateOptimizedMetadata = async ({ productLink, categoryLink, subcategoryLink, footerUrl, profile, notAuth, catalog, wishlist, resetPassword }: MetadataParams): Promise<Metadata> => {
+export const generateOptimizedMetadata = async ({ productLink, categoryLink, subcategoryLink, footerUrl, profile, notAuth, catalog, wishlist, resetPassword, payment }: MetadataParams): Promise<Metadata> => {
   let title = "RIKSI";
   let description = "Ознайомтесь з нашими товарами на сайті RIKSI.";
   let url = "https://example.com/";
@@ -76,6 +77,11 @@ export const generateOptimizedMetadata = async ({ productLink, categoryLink, sub
     if (resetPassword) {
         title = 'Скинути пароль | RIKSI',
         description = 'Скинути пароль'
+    }
+
+    if (payment) {
+        title = 'Оплата замовлення | RIKSI',
+        description = 'Оплата замовлення'
     }
 
   return {

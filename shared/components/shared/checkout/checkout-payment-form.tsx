@@ -39,7 +39,7 @@ export const CheckoutPaymentForm: React.FC<CheckoutPaymentFormProps> = ({ classN
                 <SelectItem className='text-[15px]' value="postPayment">Післяплата (завдаток 200 грн)</SelectItem>
             </SelectContent>
         </Select>
-        <span className='ml-2 text-gray-400 text-sm'>Оплата через WayForPay</span>
+        <span className='ml-2 text-gray-400 text-sm'>Оплата через WayForPay або за реквізитами</span>
 
         {paymentType === 'postPayment' && (
             <>

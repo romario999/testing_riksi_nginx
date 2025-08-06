@@ -168,6 +168,7 @@ model Order {
     status              OrderStatus
     paymentType         String
     paymentId           String?
+    paymentUrl          String
     items               Json
     fullName            String
     recipientFullName   String
@@ -264,6 +265,14 @@ model PromoCode {
   categoryIds     String[]          
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+}
+
+model PaymentDetails {
+  id        Int    @id @default(1)
+  cardKey   String
+  iban      String
+  edrpou    String
+  fopName   String
 }
 
 enum OrderStatus {

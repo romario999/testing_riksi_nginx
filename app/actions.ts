@@ -123,6 +123,7 @@ export async function createOrder(data: CheckoutFormValues, paymentUrl: string, 
                 totalAmount: finalAmount,  // Обчислюємо підсумкову суму
                 items: JSON.stringify(cartItems),
                 paymentId: orderReference,
+                paymentUrl: paymentUrl,
                 typeDelivery: deliveryType,
                 dontCall: data.dontCall || false,
             },
@@ -199,6 +200,8 @@ export async function createOrder(data: CheckoutFormValues, paymentUrl: string, 
             totalAmount: order.totalAmount,
             paymentUrl,
         }));
+
+        return order.id;
 
     } catch (err) {
         console.error('[CreateOrder] Server error', err);
@@ -985,6 +988,18 @@ export async function AdminDiscountCreate(data: Prisma.PromoCodeCreateInput) {
         })
     } catch (e) {
         console.error('Error [ADMIN_DISCOUNT_ADD]', e);
+        throw e;
+    }
+}
+
+export async function AdminPaymentEdit(id: number, data: Prisma.PaymentDetailsUpdateInput) {
+    try {
+        await prisma.paymentDetails.update({
+            where: { id },
+            data,
+        })
+    } catch (e) {
+        console.error('Error [ADMIN_PAYMENT_EDIT]', e);
         throw e;
     }
 }

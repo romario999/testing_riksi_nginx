@@ -6,9 +6,18 @@ export const createPayment = async (data: CheckoutFormValues, items: any[], tota
     const productNames = items.map(item => item.name);
     const productCounts = items.map(item => item.quantity.toString());
     const productPrices = items.map(item => item.price.toString());
+    const merchantAccount = process.env.NEXT_PUBLIC_WAYFORPAY_MERCHANT_ACCOUNT;
+                                    
+    if (!merchantAccount) {
+        throw new Error('Merchant account is not defined in environment variables');
+    }
+
+    if (data.paymentType === 'allPayment') {
+        totalAmount *= 0.97 
+    }
 
     const inputs = {
-        merchantAccount: process.env.NEXT_PUBLIC_WAYFORPAY_MERCHANT_ACCOUNT ?? '',
+        merchantAccount: merchantAccount,
         merchantDomainName: "https://riksi.com.ua",
         orderReference: `ORDER-${Date.now()}`,
         orderDate: Math.floor(Date.now() / 1000).toString(),

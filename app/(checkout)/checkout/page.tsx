@@ -90,11 +90,11 @@ export default function CheckoutPage() {
                 icon: '✅',
             });
             const finalAmount = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            const paymentPrice = data.paymentType === 'allPayment' ? finalAmount : 1;
-
+            const paymentPrice = data.paymentType === 'allPayment' ? finalAmount : 200;
             const { paymentUrl, orderReference } = await createPayment(data, cartItems, paymentPrice) as { paymentUrl: string; orderReference: string; };
-            await createOrder(data, paymentUrl, orderReference, finalAmount, cartItems);
-            window.location.href = paymentUrl;
+            const orderId = await createOrder(data, paymentUrl, orderReference, finalAmount, cartItems);
+            console.log(orderId);
+            router.push(`/payment/${orderId}`);
         } catch (err) {
             console.error(err);
             setSubmitting(false);
