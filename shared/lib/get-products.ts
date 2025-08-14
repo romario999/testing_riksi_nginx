@@ -91,6 +91,14 @@ export async function getProducts({
     orderBy = { price: sortOptions as Prisma.SortOrder };
   }
 
+  if (searchParams.search) {
+  whereConditions.name = {
+    contains: searchParams.search,
+    mode: 'insensitive',
+  };
+}
+
+
   const [products, totalCount] = await prisma.$transaction([
     prisma.product.findMany({
       where: whereConditions,
