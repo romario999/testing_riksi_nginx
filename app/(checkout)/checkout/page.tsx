@@ -3,7 +3,7 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckoutPaymentForm, CheckoutSidebar, Container, Title } from "@/shared/components/shared";
-import { useCart } from "@/shared/hooks";
+import { useCart, useCategories } from "@/shared/hooks";
 import { CheckoutAdressForm, CheckoutCart, CheckoutPersonalForm } from "@/shared/components";
 import { checkoutFormSchema, CheckoutFormValues } from "@/shared/constants";
 import { createOrder } from "@/app/actions";
@@ -14,17 +14,21 @@ import { useSession } from "next-auth/react";
 import { Api } from "@/shared/services/api-client";
 import { useRouter } from "next/navigation";
 
+// Declare fbq as a global variable for TypeScript
+declare const fbq: (event: string, action: string, params?: Record<string, unknown>) => void;
+
 export default function CheckoutPage() {
     const { updateItemQuantity, items, removeCartItem, loading } = useCart();
     const [cartItems, setCartItems] = React.useState(items);
     const [submitting, setSubmitting] = React.useState(false);
     const [discountPercent, setDiscountPercent] = React.useState(0);
-    
-    const categoryIds = items.map(item => item.categoryId).map(String);
-    
+
+    const categoryIds = items.map(item => String(item.categoryId));
+
+    const allCategories = useCategories().categories.filter(category => categoryIds.includes(String(category.id)));
+
     const { data: session } = useSession();
     const router = useRouter();
-
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutFormSchema),
         defaultValues: {
@@ -47,6 +51,45 @@ export default function CheckoutPage() {
             comment: '',
         }
     });
+
+React.useEffect(() => {
+  const sendFbq = async () => {
+    if (items.length > 0 && allCategories.length > 0) {
+      // отримуємо назви продуктів
+      const productNames = items.map(item => item.name);
+
+      // отримуємо айді продуктів через API
+      const res = await fetch('/api/find-checkout-products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productNames),
+      });
+
+      const data = await res.json();
+      const contentIds = data.products.map((p: { id: number; }) => String(p.id)); // масив id
+
+      // отримуємо назви категорій
+      const categoryNames = items.map(item => {
+        const category = allCategories.find(cat => cat.id === Number(item.categoryId));
+        return category?.name || '';
+      }).join(', ');
+
+      fbq("track", "InitiateCheckout", {
+        value: items.reduce((acc, item) => acc + (item.price * item.quantity), 0),
+        currency: "UAH",
+        content_ids: contentIds,
+        content_name: productNames,
+        content_category: categoryNames,
+        content_type: "product",
+        num_items: items.reduce((acc, item) => acc + item.quantity, 0)
+      });
+    }
+  };
+
+  sendFbq();
+}, [items, allCategories]);
+
+
 
     React.useEffect(() => {
         async function fetchUserInfo() {

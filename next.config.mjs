@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['riksi.ua', 'localhost'],
+        domains: ['riksi.ua', 'localhost', 'www.facebook.com'],
     },
     output: 'standalone',
     reactStrictMode: false,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/shared/components/shared/header";
 import { SocialLinks } from "@/shared/components/shared/social-links";
 import { Footer } from "@/shared/components";
+import FacebookPixel from "@/shared/components/shared/pixel-tracker";
 
 export const metadata: Metadata = {
   title: "RIKSI: Український Жіночий Одяг та Білизна | Ексклюзивність та Якість",
@@ -17,6 +18,7 @@ export default function HomeLayout({
 }>) {
   return (
     <>
+      <FacebookPixel />
       <Header />
       <main className="min-h-screen w-full">
           {children}

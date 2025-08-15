@@ -6,6 +6,8 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { ChooseProductForm } from './choose-product-form';
 
+declare const fbq: (...args: any[]) => void;
+
 export interface Category {
   name: string;
   categoryUrl: string;
@@ -32,6 +34,14 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, cat
           })
     
           toast.success(product.name + ' додано в кошик!');
+          fbq('track', 'AddToCart', {
+            content_name: product.name,
+            content_ids: [String(product.id)],
+            content_type: 'product',
+            content_category: category?.name,
+            value: product.price.toFixed(2),
+            currency: 'UAH',
+          })
           _onSubmit?.();
         } catch (error) {
           toast.error('Не вдалося додати товар у кошик');
