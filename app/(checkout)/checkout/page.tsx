@@ -25,7 +25,11 @@ export default function CheckoutPage() {
 
     const categoryIds = items.map(item => String(item.categoryId));
 
-    const allCategories = useCategories().categories.filter(category => categoryIds.includes(String(category.id)));
+    const categories = useCategories().categories;
+
+    const allCategories = React.useMemo(() => {
+        return categories.filter(category => categoryIds.includes(String(category.id)));
+    }, [categoryIds.join(','), categories.map(c => c.id).join(',')]);
 
     const { data: session } = useSession();
     const router = useRouter();
@@ -133,7 +137,7 @@ React.useEffect(() => {
                 icon: '✅',
             });
             const finalAmount = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            const paymentPrice = data.paymentType === 'allPayment' ? finalAmount : 200;
+            const paymentPrice = data.paymentType === 'allPayment' ? finalAmount : 1;
             const { paymentUrl, orderReference } = await createPayment(data, cartItems, paymentPrice) as { paymentUrl: string; orderReference: string; };
             const orderId = await createOrder(data, paymentUrl, orderReference, finalAmount, cartItems);
             console.log(orderId);

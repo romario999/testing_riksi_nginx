@@ -41,6 +41,7 @@ model Category {
   products        ProductCategory[]
   discountPercent String?
   isActive        Boolean @default(true)
+  showInMenu      Boolean @default(false)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }

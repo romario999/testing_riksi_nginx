@@ -1,9 +1,8 @@
 // app/api/check-all-pending-orders/route.ts
-export const dynamic = 'force-dynamic';
-
 
 import { prisma } from '@/prisma/prisma-client';
 import { checkPaymentStatus } from '@/shared/lib/check-payment-status';
+import { sendPurchaseEvent } from '@/shared/lib/send-pixel-purchase';
 import { OrderStatus } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
@@ -24,6 +23,8 @@ export async function GET() {
                         where: { id: order.id },
                         data: { status: OrderStatus.SUCCEEDED },
                     });
+                    await sendPurchaseEvent(order);
+                    
                     return { id: order.id, updated: true, newStatus: 'SUCCEEDED' };
                 }
 

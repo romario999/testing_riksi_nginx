@@ -55,6 +55,7 @@ export const createPayment = async (data: CheckoutFormValues, items: any[], tota
         clientPhone: inputs.clientPhone,
         defaultPaymentSystem: inputs.defaultPaymentSystem,
         language: 'AUTO',
+        serviceUrl: 'https://riksi.com.ua/api/wayforpay-webhook',
     };
 
     try {

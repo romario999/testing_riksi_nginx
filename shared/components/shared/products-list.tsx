@@ -164,7 +164,7 @@ export const Sticker = ({ sticker, index }: { sticker: string; index: number }) 
 
   return (
     <div
-      className={`z-[10] absolute ${index === 0 ? 'top-4' : 'top-12'} ${bgClass} left-2 rounded-l-full rounded-r-sm py-1 px-2 text-sm`}
+      className={`z-[9] absolute ${index === 0 ? 'top-4' : 'top-12'} ${bgClass} left-2 rounded-l-full rounded-r-sm py-1 px-2 text-sm`}
     >
       {sticker === 'HITS' ? <Flame size={18} /> : sticker === 'NEW' ? 'New' : 'Price Party'}
     </div>
